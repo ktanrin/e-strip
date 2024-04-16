@@ -13,16 +13,16 @@
   padding: 0 !important;
 }
 html, body {
-  height: 100%;
+  height: 100% !important;
   margin: 0;
 }
 
 #app {
-  height: 100%;
+  height: 100% !important;
 }
 
 .is-fluid, .columns, .column {
-  height: 100%;
+  height: 100%  !important;
 }
 
 .dropzone {
@@ -34,6 +34,7 @@ html, body {
 
 .leftzone, .rightzone {
   background-color: darkgray; /* Use a different color if needed */
+  height: 100%;
   /* Adjust padding to your requirements */
 }
 </style>
