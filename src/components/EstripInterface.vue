@@ -8,6 +8,15 @@
     </div>
 </template>
 
+<script>
+export default {
+    name: 'EstripInterface',
+    mounted() {
+    
+    }
+}
+</script>
+
 <style>
 .container.is-fluid {
   padding: 0 !important;
@@ -39,11 +48,3 @@ html, body {
 }
 </style>
 
-<script>
-export default {
-    name: 'EstripInterface',
-    mounted() {
-    
-    }
-}
-</script>
