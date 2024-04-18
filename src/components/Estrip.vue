@@ -9,9 +9,9 @@
                 <p class="RFL">F350</p>
                 </div>
             </div>
-            <div class="column is-4 second">
+            <div class="column second">
                 <div class="container is-fluid second-content">
-                    <p class="Type">B738</p>
+                    <p class="Type">A320</p>
                     <p class="aircraftCallsign">AIQ536</p>     
                     <div class="container is-fluid lastrow">
                         <p class="SSR">6113</p>
@@ -22,7 +22,7 @@
             </div>
             <div class="column is-7 third">
                 <div class="columns is-gapless">
-                    <div class="column is-6">
+                    <div class="column">
                         <div class="container is-fluid thirdone-content">
                             <div class="container is-fluid firstrow">                               
                                 <p class="stand">26</p>
@@ -34,7 +34,7 @@
                                 <p class="taxiRoute">H C D</p>
                             </div>
                             <div class="container is-fluid thirdrow">
-                                <input type="button" />
+                                <input type="button" disabled />
                             </div>
                         </div>
                     </div>
@@ -50,7 +50,8 @@
                     </div>
                     <div class="column is-1">
                         <div class="container is-fluid thirdfour-content">
-                            <p class="emoji">D</p>
+                            <font-awesome-icon icon="eraser" class="icon-eraser fa-lg" @click="startErasing" />
+                            <font-awesome-icon icon="pencil-alt" class="icon-pencil fa-lg" @click="startDrawing" />
                         </div>
                     </div>
                 </div>
@@ -87,6 +88,14 @@ export default {
 
 
 <style scoped>
+.thirdfour-content {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    flex-direction: column;
+    color: black;
+    font-size: bold;
+}
 .nextstate.title {
     color: black;
 }
@@ -178,8 +187,8 @@ export default {
 }
 .strip {
     /* Add your strip styles here */
-    height: 100px;
-    width: 650px;
+    height: 80px;
+    width: 600px;
     background-color: whitesmoke;
     position: absolute; 
     top: 50%; 
