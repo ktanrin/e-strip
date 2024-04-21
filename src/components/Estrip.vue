@@ -1,7 +1,14 @@
 <template>
-
     <div class="strip">
         <!-- Add your strip content here -->
+        <canvas ref="canvas"
+        class="strip-canvas"
+        width="575"
+        height="80"
+        @mousedown="startDrawing"
+        @mousemove="draw"
+        @mouseup="stopDrawing"
+        @mouseleave="stopDrawing"></canvas>
         <div class="columns is-gapless">
             <div class="column is-1 first">
                 <div class="container is-fluid first-content">
@@ -51,7 +58,7 @@
                     <div class="column is-1">
                         <div class="container is-fluid thirdfour-content">
                             <font-awesome-icon icon="eraser" class="icon-eraser fa-lg" @click="startErasing" />
-                            <font-awesome-icon icon="pencil-alt" class="icon-pencil fa-lg" @click="startDrawing" />
+                            <font-awesome-icon icon="pencil-alt" class="icon-pencil fa-lg" @click="togglePencil" />
                         </div>
                     </div>
                 </div>
@@ -78,9 +85,58 @@ export default {
             flightRule: '',
             runwayInUse: '',
             SID: '',
-            taxiRoute: ''
+            taxiRoute: '',
+            isDrawing: false,
+            isErasing: false,
+            context: null,
+            lastX: 0,
+            lastY: 0,
         };
-    }
+    },
+    mounted() {
+        this.context = this.$refs.canvas.getContext('2d');
+        this.context.strokeStyle = '#000';  // Default drawing color
+        this.context.lineWidth = 2;         // Default line width
+    },
+
+    methods: {
+    startDrawing(event) {
+      // Only start drawing if we are not erasing
+      if (!this.isErasing && event.button === 0) {
+        this.isDrawing = true;
+        this.lastX = event.offsetX;
+        this.lastY = event.offsetY;
+        this.context = this.$refs.canvas.getContext('2d');
+        this.context.beginPath();
+        this.context.moveTo(this.lastX, this.lastY);
+      }
+    },
+    draw(event) {
+      if (!this.isDrawing) return;
+      this.context.lineTo(event.offsetX, event.offsetY);
+      this.context.stroke();
+   
+    },
+    stopDrawing() {
+      if (this.isDrawing) {
+        this.context.closePath();
+        this.isDrawing = false;
+      }
+    },
+    clearCanvas() {
+        if (this.context) {
+                this.context.clearRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height);
+            }
+    },
+    startErasing() {
+      this.clearCanvas();
+    },
+    togglePencil() {
+        this.isDrawing = false; 
+    },
+  
+},
+
 };
 </script>
 
@@ -88,6 +144,13 @@ export default {
 
 
 <style scoped>
+
+.strip-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10; /* Ensure it's above the strip content */
+}
 .thirdfour-content {
     display: flex;
     justify-content: end;
