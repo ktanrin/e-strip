@@ -144,6 +144,22 @@ export default {
 
 
 <style scoped>
+.aircraftCallsign{
+    font-size: 1.25em;
+    font-weight: bold;
+    
+}
+.Type {
+    font-size: 0.75em;
+    
+}
+.stand, .runwayInUse, .SID, .taxiRoute {
+    
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 85%;
+    text-align: center;
+}
 
 .strip-canvas {
   position: absolute;
