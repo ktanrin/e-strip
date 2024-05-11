@@ -166,6 +166,7 @@ export default {
   top: 0;
   left: 0;
   z-index: 10; /* Ensure it's above the strip content */
+  /* border: 1px solid black; */
 }
 .thirdfour-content {
     display: flex;
@@ -266,13 +267,14 @@ export default {
 }
 .strip {
     /* Add your strip styles here */
+    position: relative;
     height: 80px;
     width: 600px;
     background-color: whitesmoke;
-    position: absolute; 
+    /* position: absolute; 
     top: 50%; 
     left: 50%; 
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); */
 }
 .column.second {
     background-color: rgb(255, 255, 0);
