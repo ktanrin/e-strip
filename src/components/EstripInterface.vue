@@ -11,11 +11,16 @@
             
             
             <div class="column is-8 dropzone">
-              <div class="drag-container">
-                <Draggable v-model="strips" itemKey="id" :options="{ direction: 'horizontal' }" class="drag-area" @end="onDragEnd">
-                  <template  #item="{ element }">
-                    <Estrip  :key="element.id" :data="element"/>
-                  </template>
+              <div class="drag-container full-height">
+                <Draggable v-model="strips" 
+                           itemKey="id" 
+                           class="drag-area full-height" 
+                           @start="onDragStart"
+                           @end="onDragEnd"
+                          >
+                          <template #item="{ element }">
+                            <Estrip :key="element.id" :data="element" :style="{ left: `${element.x}px`, top: `${element.y}px` }" class="draggable-strip" />
+                          </template>
                 </Draggable>
               </div>
             </div>
@@ -48,11 +53,14 @@ export default {
             centerStrips: [],
             rightStrips: [],
             strips: [
-              { id: 1, content: 'First strip' },  // Example data, adapt based on your actual data structure
-              { id: 2, content: 'Second strip' },
-              { id: 3, content: 'Third strip' },
-            
-            ]
+              { id: 1, content: 'First strip', x: 0, y: 0 },  // Add position properties
+              { id: 2, content: 'Second strip', x: 0, y: 0 },
+              { id: 3, content: 'Third strip', x: 0, y: 0 },
+            ],
+            initialX: 0,
+            initialY: 0,
+            offsetX: 0,
+            offsetY: 0
         };
     },
     methods: {
@@ -60,24 +68,50 @@ export default {
         console.log('Drag operation finished', event);
         // Additional logic to handle after drag ends
     },
-    onDragEnd(event) {
-    console.log('Finished dragging', event);
-    console.log('New strips order:', this.strips);
-  }
+    onDragStart(evt) {
+      const draggedElement = evt.item;
+      this.initialX = evt.originalEvent.clientX;
+      this.initialY = evt.originalEvent.clientY;
+      this.offsetX = draggedElement.offsetLeft;
+      this.offsetY = draggedElement.offsetTop;
+    },
+    onDragEnd(evt) {
+      const draggedElement = evt.item;
+      const draggedId = parseInt(draggedElement.getAttribute('data-id'));
+      const draggedItem = this.strips.find(item => item.id === draggedId);
+      if (draggedItem) {
+        const newX = this.offsetX + (evt.originalEvent.clientX - this.initialX);
+        const newY = this.offsetY + (evt.originalEvent.clientY - this.initialY);
+        draggedItem.x = newX;
+        draggedItem.y = newY;
+      } else {
+        console.error('Dragged item not found');
+      }
+      console.log('Finished dragging', evt);
+      console.log('New strips order:', this.strips);
+    
+    }
+   
   }
 }
 </script>
 
 <style>
 .drag-container {
-  padding: 20px;
+  height: 100%;
+  width: 100%;
+  position: relative;
 }
-
+.draggable-strip {
+  position: absolute;
+  cursor: move;
+}
 .drag-area {
   border: 1px solid #ccc;
   min-height: 100px;
   min-width: 100%;  
-  
+  position: relative;
+
 }
 
 .estrip-item {

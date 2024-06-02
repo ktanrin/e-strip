@@ -268,6 +268,7 @@ export default {
 .strip {
     /* Add your strip styles here */
     position: relative;
+    margin: 5px;
     height: 80px;
     width: 600px;
     background-color: whitesmoke;
