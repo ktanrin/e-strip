@@ -14,12 +14,23 @@
               <div class="drag-container full-height">
                 <Draggable v-model="strips" 
                            itemKey="id" 
-                           class="drag-area full-height" 
+                           class="drag-area full-height"
+                           group="strips"
                            @start="onDragStart"
                            @end="onDragEnd"
+                           :move="onMove"
+                           :animation="0"
+                           :ghost-class="'hidden-ghost'"
+                           
                           >
                           <template #item="{ element }">
-                            <Estrip :key="element.id" :data="element" :style="{ left: `${element.x}px`, top: `${element.y}px` }" class="draggable-strip" />
+                            <Estrip 
+                            :key="element.id" 
+                            :data="element" 
+                            :style="{ left: `${element.x}px`, top: `${element.y}px`, opacity: isDragging ? 1 : 1 }" 
+                            class="draggable-strip"
+                            :data-id="element.id"
+                          />
                           </template>
                 </Draggable>
               </div>
@@ -54,14 +65,26 @@ export default {
             rightStrips: [],
             strips: [
               { id: 1, content: 'First strip', x: 0, y: 0 },  // Add position properties
-              { id: 2, content: 'Second strip', x: 0, y: 0 },
+              { id: 2, content: 'Second strip', x: 0, y: 0},
               { id: 3, content: 'Third strip', x: 0, y: 0 },
+              { id: 4, content: 'Fourth strip', x: 0, y: 0 },
             ],
             initialX: 0,
             initialY: 0,
             offsetX: 0,
-            offsetY: 0
+            offsetY: 0,
+            isDrawing: false,
+            isDragging: false,
+            stripWidth: 300, // Assuming the width of the strip
+            stripHeight: 80, // Assuming the height of the strip
+            dragAreaWidth: 0,
+            dragAreaHeight: 0
         };
+    },
+    mounted() {
+        const dragArea = this.$el.querySelector('.drag-area');
+        this.dragAreaWidth = dragArea.clientWidth;
+        this.dragAreaHeight = dragArea.clientHeight;
     },
     methods: {
     onEnd(event) {
@@ -70,36 +93,56 @@ export default {
     },
     onDragStart(evt) {
       const draggedElement = evt.item;
+      const rect = draggedElement.getBoundingClientRect();
       this.initialX = evt.originalEvent.clientX;
       this.initialY = evt.originalEvent.clientY;
-      this.offsetX = draggedElement.offsetLeft;
-      this.offsetY = draggedElement.offsetTop;
+      this.offsetX = rect.left - this.initialX;
+      this.offsetY = rect.top - this.initialY;
+      this.isDragging = true;
     },
     onDragEnd(evt) {
       const draggedElement = evt.item;
       const draggedId = parseInt(draggedElement.getAttribute('data-id'));
-      const draggedItem = this.strips.find(item => item.id === draggedId);
+      const draggedItem = this.findDraggedItem(draggedId);
       if (draggedItem) {
-        const newX = this.offsetX + (evt.originalEvent.clientX - this.initialX);
-        const newY = this.offsetY + (evt.originalEvent.clientY - this.initialY);
+        let newX = draggedItem.x + (evt.originalEvent.clientX - this.initialX);
+        let newY = draggedItem.y + (evt.originalEvent.clientY - this.initialY);
+        newX = Math.max(0, Math.min(newX, this.dragAreaWidth - this.stripWidth));
+        newY = Math.max(0, Math.min(newY, this.dragAreaHeight - this.stripHeight));
         draggedItem.x = newX;
         draggedItem.y = newY;
+        
       } else {
         console.error('Dragged item not found');
       }
+      this.isDragging = false;
       console.log('Finished dragging', evt);
       console.log('New strips order:', this.strips);
     
-    }
+    },
+    findDraggedItem(draggedId) {
+      return this.strips.find(item => item.id === draggedId);
+    },
+    cockStrips(draggedItem) {
+      // Move the dragged item to the right by 30px
+      draggedItem.x += 30;
+      draggedItem.x = Math.min(draggedItem.x, this.dragAreaWidth - this.stripWidth);
+    },
+    
+    
+    
    
   }
 }
 </script>
 
 <style>
+.hidden-ghost {
+    display: none !important;
+}
 .drag-container {
   height: 100%;
-  width: 100%;
+  width: 40%;
   position: relative;
 }
 .draggable-strip {
@@ -107,12 +150,13 @@ export default {
   cursor: move;
 }
 .drag-area {
-  border: 1px solid #ccc;
+  border: 2px solid white;
   min-height: 100px;
   min-width: 100%;  
-  position: relative;
-
+  width: 30px;
+  position: absolute;
 }
+
 
 .estrip-item {
   margin: 10px;
@@ -123,15 +167,7 @@ export default {
 .full-height {
   height: 100%;
 }
-.draggable-list {
-  min-height: 100px;
-  background-color: lightgray;
-}
 
-.strip-wrapper {
-  padding: 10px;
-  border: 1px solid blue; 
-}
 
 .container.is-fluid {
   padding: 0 !important;

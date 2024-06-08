@@ -1,11 +1,11 @@
 <template>
-    <div class="strip">
+    <div class="strip" @mousedown.stop="handleMouseDown">
         <!-- Add your strip content here -->
         <canvas ref="canvas"
         class="strip-canvas"
         width="575"
         height="80"
-        @mousedown="startDrawing"
+        @mousedown.stop="startDrawing"
         @mousemove="draw"
         @mouseup="stopDrawing"
         @mouseleave="stopDrawing"></canvas>
@@ -88,6 +88,7 @@ export default {
             taxiRoute: '',
             isDrawing: false,
             isErasing: false,
+            isPencilActive: false,
             context: null,
             lastX: 0,
             lastY: 0,
@@ -97,12 +98,18 @@ export default {
         this.context = this.$refs.canvas.getContext('2d');
         this.context.strokeStyle = '#000';  // Default drawing color
         this.context.lineWidth = 2;         // Default line width
+
+        //add listener to stop drawing when mouse click outside the canvas
+        document.addEventListener('mousedown', this.handleOutsideClick);
+    },
+    beforeUnmount() {
+        document.removeEventListener('mousedown', this.handleOutsideClick);
     },
 
     methods: {
     startDrawing(event) {
       // Only start drawing if we are not erasing
-      if (!this.isErasing && event.button === 0) {
+      if (this.isPencilActive && !this.isErasing && event.button === 0) {
         this.isDrawing = true;
         this.lastX = event.offsetX;
         this.lastY = event.offsetY;
@@ -132,7 +139,19 @@ export default {
       this.clearCanvas();
     },
     togglePencil() {
+        this.isPencilActive = !this.isPencilActive;
         this.isDrawing = false; 
+    },
+    handleOutsideClick(event) {
+      if (!this.$el.contains(event.target)) {
+        this.isPencilActive = false;
+        this.isDrawing = false;
+      }
+    },
+    handleMouseDown(event) {
+      if (this.isPencilActive) {
+        this.startDrawing(event);
+      }
     },
   
 },
@@ -154,7 +173,7 @@ export default {
     
 }
 .stand, .runwayInUse, .SID, .taxiRoute {
-    
+    font-size: 0.75em;
     border: 1px solid black;
     border-radius: 5px;
     width: 85%;
@@ -253,7 +272,7 @@ export default {
     font-size: bold;
 }
 .state {
-    font-size: 1.5em;
+    font-size: 1.2em;
     border: 1px solid black;
     border-radius: 5px;
 }
