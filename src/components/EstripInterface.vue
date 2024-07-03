@@ -2,11 +2,23 @@
     <div class="container is-fluid">
         <div class = "columns is-gapless">
             <div class="column is-2 leftzone">
-              <Draggable class="full-height" v-model="leftStrips" group="strips" @end="onEnd">
-                    <template #item="{ element }">
-                        <Estrip :data="element" />
-                    </template>
-                </Draggable>
+
+                <div class="half-column outbound">   
+                  <Draggable class="full-height" v-model="outboundStrips" group="strips" @end="onEnd">
+                      <template #item="{ element }">
+                          <ShortEstrip :data="element" />
+                      </template>
+                  </Draggable>
+                </div>
+
+                <div class="half-column inbound">
+                  <Draggable class="full-height" v-model="inboundStrips" group="strips" @end="onEnd">
+                      <template #item="{ element }">
+                          <ShortEstrip :data="element" />
+                      </template>
+                  </Draggable>
+                </div>
+
             </div>
             
             
@@ -20,8 +32,7 @@
                            @end="onDragEnd"
                            :move="onMove"
                            :animation="0"
-                           :ghost-class="'hidden-ghost'"
-                           
+                           :ghost-class="'hidden-ghost'"                     
                           >
                           <template #item="{ element }">
                             <Estrip 
@@ -50,17 +61,20 @@
 <script>
 import Draggable from 'vuedraggable'; // for Vue 3
 import Estrip from './Estrip.vue';
+import ShortEstrip from './ShortEstrip.vue';
 
 export default {
     name: 'EstripInterface',
     components: {
     Draggable,
-    Estrip
+    Estrip,
+    ShortEstrip
     },
     
     data() {
         return {
-            leftStrips: [],
+            outboundStrips: [],
+            inboundStrips: [],
             centerStrips: [],
             rightStrips: [],
             strips: [
@@ -195,7 +209,17 @@ html, body {
 .leftzone, .rightzone {
   background-color: darkgray; /* Use a different color if needed */
   height: 100%;
+  display: flex;
+  flex-direction: column;
+ 
   /* Adjust padding to your requirements */
+}
+
+.half-column {
+  
+  border: 1px solid #ccc;
+  overflow-y: auto;
+  min-height: 50%;
 }
 </style>
 
