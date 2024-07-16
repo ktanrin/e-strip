@@ -3,7 +3,7 @@
         <div class="container data">
             <div class="first-row">
                 <p class="type">BK17/L</p>
-                <p class="callsign">BHD711</p>             
+                <p class="callsign">{{ data.aircraftCallsign }}</p>             
             </div>
             <div class="second-row container columns">
                 <div class="column is-3 p-0">
@@ -27,6 +27,12 @@
 <script>
 export default {
     name: 'ShortEstrip',
+    props: {
+    data: {
+      type: Object,
+      required: true
+    }
+  },
     data() {
         return {
             

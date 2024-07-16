@@ -74,15 +74,15 @@ export default {
     data() {
         return {
             outboundStrips: [],
-            inboundStrips: [],
+            inboundStrips: [
+              { id: 1, content: 'First strip', x: 0, y: 0 , aircraftCallsign: 'AIQ536'},  // Add position properties
+              { id: 2, content: 'Second strip', x: 0, y: 0 , aircraftCallsign: 'TLM123'},
+              { id: 3, content: 'Third strip', x: 0, y: 0 , aircraftCallsign: 'NOK456'},
+              { id: 4, content: 'Fourth strip', x: 0, y: 0 , aircraftCallsign: 'DKH789'},
+            ],
             centerStrips: [],
             rightStrips: [],
-            strips: [
-              { id: 1, content: 'First strip', x: 0, y: 0 },  // Add position properties
-              { id: 2, content: 'Second strip', x: 0, y: 0},
-              { id: 3, content: 'Third strip', x: 0, y: 0 },
-              { id: 4, content: 'Fourth strip', x: 0, y: 0 },
-            ],
+            strips: [],
             initialX: 0,
             initialY: 0,
             offsetX: 0,

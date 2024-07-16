@@ -19,7 +19,9 @@
             <div class="column second">
                 <div class="container is-fluid second-content">
                     <p class="Type">A320</p>
-                    <p class="aircraftCallsign">AIQ536</p>     
+                    <p class="aircraftCallsign">
+                        {{ data.aircraftCallsign }}
+                    </p>     
                     <div class="container is-fluid lastrow">
                         <p class="SSR">6113</p>
                         <p class="TOBT">1730</p>
@@ -71,21 +73,14 @@
 <script>
 export default {
     name: 'Dep-Estrip',
+    props: {
+    data: {
+      type: Object,
+      required: true
+    }
+  },
     data() {
         return {
-            state: '',
-            requestedFlightLevel: '',
-            aircraftCallsign: '',
-            Type: '',
-            WTC: '',
-            SSR: '',
-            TOBT: '',
-            destinationAirportICAOCode: '',
-            stand: '',
-            flightRule: '',
-            runwayInUse: '',
-            SID: '',
-            taxiRoute: '',
             isDrawing: false,
             isErasing: false,
             isPencilActive: false,
