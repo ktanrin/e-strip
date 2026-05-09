@@ -1,13 +1,13 @@
 <template>
-    <div class="short-strip">
+    <div class="short-strip" :class="stripTypeClass">
         <div class="container data">
             <div class="first-row">
-                <p class="type">BK17/L</p>
+                <p class="type">{{ typeLabel }}</p>
                 <p class="callsign">{{ data.aircraftCallsign }}</p>             
             </div>
             <div class="second-row container columns">
                 <div class="column is-3 p-0">
-                    <p>21L</p>
+                    <p>{{ data.state }}</p>
                 </div>
                 <div class="column is-3 p-0">
                     <p>106</p>
@@ -33,6 +33,14 @@ export default {
       required: true
     }
   },
+    computed: {
+        stripTypeClass() {
+            return this.data.type === 'arrival' ? 'short-strip--arrival' : 'short-strip--departure';
+        },
+        typeLabel() {
+            return this.data.type === 'arrival' ? 'ARR' : 'DEP';
+        }
+    },
     data() {
         return {
             
@@ -48,9 +56,16 @@ export default {
     position: relative;
     margin: 1px;
     height: 68px;
-    width: full-width;
+    width: 100%;
     background-color: yellow; 
     border: black 1px solid;
+    cursor: inherit;
+}
+.short-strip--departure {
+    background-color: yellow;
+}
+.short-strip--arrival {
+    background-color: rgb(0, 183, 255);
 }
 
 .first-row {

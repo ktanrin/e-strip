@@ -1,0 +1,7 @@
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+-  Bundling main process...
+(node:27684) [DEP0128] DeprecationWarning: Invalid 'main' field in 'C:\vuejs\myapp\e-strip\dist_electron\package.json' of 'background.js'. Please either fix that or report it to the module author
+(Use `electron --trace-deprecation ...` to show where the warning was created)
+^C

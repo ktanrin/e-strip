@@ -1,8 +1,9 @@
 <template>
-    <div class="strip" @mousedown.stop="handleMouseDown">
+    <div class="strip" :class="stripTypeClass" @mousedown.stop="handleMouseDown">
         <!-- Add your strip content here -->
         <canvas ref="canvas"
         class="strip-canvas"
+        :class="{ 'is-active': isPencilActive }"
         width="575"
         height="80"
         @mousedown.stop="startDrawing"
@@ -12,13 +13,13 @@
         <div class="columns is-gapless">
             <div class="column is-1 first">
                 <div class="container is-fluid first-content">
-                <p class="state">PSH</p>
+                <p class="state">{{ currentState }}</p>
                 <p class="RFL">F350</p>
                 </div>
             </div>
             <div class="column second">
                 <div class="container is-fluid second-content">
-                    <p class="Type">A320</p>
+                    <p class="Type">{{ data.aircraftType || 'A320' }}</p>
                     <p class="aircraftCallsign">
                         {{ data.aircraftCallsign }}
                     </p>     
@@ -54,7 +55,14 @@
                     </div>
                     <div class="column is-3">
                         <div class="container is-fluid thirdthree-content">
-                            <p class="nextstate title">TXI</p>
+                            <p
+                              class="nextstate title"
+                              :class="{ 'is-disabled': !nextState }"
+                              @pointerdown.stop
+                              @click.stop="advanceState"
+                            >
+                              {{ nextState || currentState }}
+                            </p>
                         </div>
                     </div>
                     <div class="column is-1">
@@ -79,6 +87,18 @@ export default {
       required: true
     }
   },
+    emits: ['advance-state'],
+    computed: {
+        currentState() {
+            return this.data.state || 'PND';
+        },
+        nextState() {
+            return this.data.nextState || '';
+        },
+        stripTypeClass() {
+            return this.data.type === 'arrival' ? 'strip--arrival' : 'strip--departure';
+        }
+    },
     data() {
         return {
             isDrawing: false,
@@ -137,6 +157,11 @@ export default {
         this.isPencilActive = !this.isPencilActive;
         this.isDrawing = false; 
     },
+    advanceState() {
+      if (this.nextState) {
+        this.$emit('advance-state');
+      }
+    },
     handleOutsideClick(event) {
       if (!this.$el.contains(event.target)) {
         this.isPencilActive = false;
@@ -180,9 +205,16 @@ export default {
   top: 0;
   left: 0;
   z-index: 10; /* Ensure it's above the strip content */
+  pointer-events: none;
   /* border: 1px solid black; */
 }
+.strip-canvas.is-active {
+  cursor: crosshair;
+  pointer-events: auto;
+}
 .thirdfour-content {
+    position: relative;
+    z-index: 20;
     display: flex;
     justify-content: end;
     align-items: center;
@@ -192,6 +224,12 @@ export default {
 }
 .nextstate.title {
     color: black;
+    cursor: pointer;
+    user-select: none;
+}
+.nextstate.title.is-disabled {
+    cursor: default;
+    opacity: 0.45;
 }
 .thirdthree-content {
     display: flex;
@@ -291,8 +329,11 @@ export default {
     left: 50%; 
     transform: translate(-50%, -50%); */
 }
-.column.second {
+.strip--departure .column.second {
     background-color: rgb(255, 255, 0);
 
+}
+.strip--arrival .column.second {
+    background-color: rgb(0, 183, 255);
 }
 </style>

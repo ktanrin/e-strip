@@ -1,10 +1,10 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPencilAlt, faEraser } from '@fortawesome/free-solid-svg-icons';
+import { faEraser, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-library.add(faPencilAlt, faEraser);
+library.add(faEraser, faPencilAlt);
 
 const app = createApp(App);
 
